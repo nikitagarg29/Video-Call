@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" context="width = device-width, initial-scale = 1.0">
+
+    <!--Calling in socket.io which is open source javascript library (https://socket.io/)-->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!--Room id is unique randomly generated for every meeting room-->
+    <script>
+        const ROOM_ID = "<%= roomId %>";
+    </script>
+
+    <title>Collab with team</title>
+
+    <!--Importing peerjs which is open source wrapper for webrtc (peerjs library: https://peerjs.com/)-->
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.3.2/peerjs.min.js.map"></script> -->
+
+    <!--Linking the stylesheets-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+    <audio id="chatAudio" src="chat_request.mp3"></audio>
+    <div class="overlay" onclick="hideInvitePopup()"></div>
+    
+    <div class="invitePop">
+        <input type="text" value="..." id="roomLink" readonly />
+        <button onclick="copyToClipboard()">Copy</button>
+    </div>
+
+    <div class="main">
+        <div class="main_left">
+            <!-- Video dimensions -->
+            <div class="main_videos">
+                <!--Main video grid to display all users-->
+                <div id="video-grid">
+                </div>
+            </div>
+
+            <!--Control buttons: Mute, Pause video, Chat, Invite-->
+            <div class="main_controls">
+                <div class="main_controls_block">
+
+                    <div class="main_controls_button" id="muteButton" onclick="muteUnmute()">
+                        <i class="fa fa-microphone" aria-hidden="true"></i>
+                        <span>Mute</span>
+                    </div>
+
+                    <div class="main_controls_button" id="playPauseVideo" onclick="playStop()">
+                        <i class="fa fa-video-camera" aria-hidden="true"></i>
+                        <span>Video</span>
+                    </div>
+
+                </div>
+
+                <div class="main_controls_block">
+                    <div class="mains_control_button" id="chat_Btn" onclick="ShowChat(this)">
+                        <i class="fa fa-comment" aria-hidden="true"></i>
+                        <span>Chat</span>
+                    </div>
+
+                    <div class="mains_controls_button" onclick="showInvitePopup()">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        <span>Invite others</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main_right">
+            <!-- Chat box dimensions -->
+            <div class="main_header">
+                <h6><span class="live"></span>CHAT BOX</h6>
+            </div>
+            <div class="main_chat_window" id="main_chat_window">
+                <ul class="messages" id="all_messages"></ul>
+            </div>
+            <div class="main_message_container">
+                <input type="text" id="chat_message" placeholder="Type here..." />
+                <button class="sendMsg" id="sendMsg">
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>"
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!--Importing script.js from public directory-->
+    <script src="script.js"></script>
+</body>
+
+</html>
