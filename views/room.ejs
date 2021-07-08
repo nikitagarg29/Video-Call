@@ -25,10 +25,12 @@
 </head>
 
 <body>
-    <audio id="chatAudio" src="chat_request.mp3"></audio>
+    
     <div class="overlay" onclick="hideInvitePopup()"></div>
     
-    <div class="invitePop">
+    <div class="invitePop" id="invitePop">
+        <span>Send the below link to invite others: </span>
+        <br>
         <input type="text" value="..." id="roomLink" readonly />
         <button onclick="copyToClipboard()">Copy</button>
     </div>
@@ -59,16 +61,38 @@
                 </div>
 
                 <div class="main_controls_block">
-                    <div class="mains_control_button" id="chat_Btn" onclick="ShowChat(this)">
+
+                    <div class="main_controls_button" onclick="screenShare()">
+                        <i class="fa fa-share-square-o" aria-hidden="true"></i>
+                        <span>Present Screen</span>
+                    </div>
+
+                    <div onclick="raisedHand()" class="main_controls_button raisedHand">
+                        <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
+	        			<span>Raise Hand</span>
+	        		</div>
+                    
+                </div>
+
+                <div class="main_controls_block">
+                    <div class="main_controls_button" id="chat_Btn" onclick="ShowChat(this)">
                         <i class="fa fa-comment" aria-hidden="true"></i>
                         <span>Chat</span>
                     </div>
 
-                    <div class="mains_controls_button" onclick="showInvitePopup()">
+                    <div class="main_controls_button" onclick="showInvitePopup()">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                         <span>Invite others</span>
                     </div>
+
                 </div>
+
+                <div class="main_controls_block">	
+                    <div onclick="disconnectNow()" class="main_controls_button main_leave"  style=" color: Tomato;">
+                        <span style="color: red;">Leave Meeting</span>
+                    </div>
+                </div>
+
             </div>
         </div>
         
