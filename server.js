@@ -79,8 +79,8 @@ io.on("connection", (socket) => {
         });
 
         //Messaging to a particular meeting room
-        socket.on("message", (message) => {
-            io.to(roomId).emit("createMessage", message);
+        socket.on("message", (message, yourName) => {
+            io.to(roomId).emit("createMessage", message, yourName);
         });
 
         //Disconnecting user
