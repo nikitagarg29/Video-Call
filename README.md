@@ -15,7 +15,7 @@
 - Since it is a low level API, features and functionalities can be customized easily.
 - It can be included in the webpage as the JavaScript client.
 - Every peer is assigned a random unique id when it's created by the API.
-- Free of cost
+- Free of cost   
 **Cons:**
 - Since it establishes a connection peer to peer, it is comparatively slow.
 - The peerjs github repo is not very active, hence you need to figure out the bugs and solve them on your own.
@@ -28,7 +28,7 @@
 **Pros:**
 - Using the high level API is very easy.
 - It offers almost all the features that one would wish to have like screen share, chat, recording etc.
-- Free of cost
+- Free of cost   
 **Cons:**
 - High level API cannot be customized easily.
 - Documentation available is not descriptive.
@@ -42,7 +42,7 @@
 - Complete set of features.
 - Very good documentation
 - Doubt support also available
-- Easy to customize and integrate within your app
+- Easy to customize and integrate within your app    
 **Cons:**
 - Paid
 - Hosting can be tricky as you need to the secret keys which change regularly.
@@ -53,7 +53,7 @@
 - Easy to integrate in app.
 - Good documentation with tutorials.
 - Built on top of webRTC.
-- Lots of tools available to be added in the app.
+- Lots of tools available to be added in the app.   
 **Cons:**
 - Paid.
 - No doubt support.
