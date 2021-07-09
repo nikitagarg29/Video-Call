@@ -58,3 +58,7 @@ Cons:
 Paid.
 No doubt support.
 
+Landing page template: Switch
+by Free Software Foundation, Inc. <http://fsf.org/>
+That page was customized to suit this webApp.
+

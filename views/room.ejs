@@ -26,12 +26,14 @@
 </head>
 
 <body>
-
+    <!--Hiding the invite popup-->
     <div class="overlay" onclick="hideInvitePopup()"></div>
 
+    <!--Showing the invite popup-->
     <div class="invitePop" id="invitePop">
         <span>Send the below link to invite others: </span>
         <br>
+        <!--The value field will be populated by the url of the meeting-->
         <input type="text" value="..." id="roomLink" readonly />
         <button onclick="copyToClipboard()">Copy</button>
     </div>
@@ -49,11 +51,13 @@
             <div class="main_controls">
                 <div class="main_controls_block">
 
+                    <!--Mute/ Unmute button-->
                     <div class="main_controls_button" id="muteButton" onclick="muteUnmute()">
                         <i class="fa fa-microphone" aria-hidden="true"></i>
                         <span>Mute</span>
                     </div>
 
+                    <!--Play/ Pause video button-->
                     <div class="main_controls_button" id="playPauseVideo" onclick="playStop()">
                         <i class="fa fa-video-camera" aria-hidden="true"></i>
                         <span>Video</span>
@@ -63,11 +67,13 @@
 
                 <div class="main_controls_block">
 
+                    <!--Share screen icon button-->
                     <div class="main_controls_button" onclick="screenShare()">
                         <i class="fa fa-share-square-o" aria-hidden="true"></i>
                         <span>Present Screen</span>
                     </div>
 
+                    <!--Whiteboard link (external site) button-->
                     <div class="main_controls_button" id="whiteboard" onclick="whiteboard()">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                         <span>Whiteboard</span>
@@ -77,11 +83,13 @@
 
                 <div class="main_controls_block">
 
+                    <!--Raise hand icon button-->
                     <div onclick="raisedHand()" class="main_controls_button raisedHand">
                         <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
                         <span>Raise Hand</span>
                     </div>
 
+                    <!--Invite popup icon button-->
                     <div class="main_controls_button" onclick="showInvitePopup()">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                         <span>Invite others</span>
@@ -90,6 +98,8 @@
                 </div>
 
                 <div class="main_controls_block">
+
+                    <!--Leave meeting button-->
                     <div onclick="disconnectNow()" class="main_controls_button main_leave" style=" color: Tomato;">
                         <span style="color: red;">Leave Meeting</span>
                     </div>
@@ -101,11 +111,16 @@
         <div class="main_right">
             <!-- Chat box dimensions -->
             <div class="main_header">
+                <!--Heading of chatbox-->
                 <h4><span class="live"></span>CHAT BOX</h4>
             </div>
+
+            <!--Main body of chat box where all messages are displayed-->
             <div class="main_chat_window" id="main_chat_window">
                 <ul class="messages" id="all_messages"></ul>
             </div>
+
+            <!--Creating a placeholder where one can type the message to be sent-->
             <div class="main_message_container">
                 <input type="text" id="chat_message" placeholder="Type here..." />
                 <button class="sendMsg" id="sendMsg">

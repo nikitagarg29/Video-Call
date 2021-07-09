@@ -12,6 +12,9 @@ myVideo.muted = true;
    peerjs library: https://peerjs.com/ */
 const peer = new Peer({
     config: {
+        /*Using the freely available stun and turn servers
+          Free turn servers are not reliable, they tend to change urls often
+          Hence, trying out many free servers, but still cannot assure that they'll work. */
         iceServers: [
             {
                 url: 'stun:stun.l.google.com:19302'
@@ -48,7 +51,7 @@ let peers = {};
 let currentPeer = [];
 let users = [];
 
-
+//Asking for user name from the user
 let YourName = prompt("Enter your name...");
 
 /* Using the getUserMedia() API for accessing the camera and microphone
@@ -73,6 +76,7 @@ navigator.mediaDevices
             call.answer(stream);
             const video = document.createElement("video");
 
+            //adding the video stream during call
             call.on("stream", (userVideoStream) => {
                 addVideoStream(video, userVideoStream);
                 console.log(peers);
@@ -81,6 +85,7 @@ navigator.mediaDevices
             let gride;
             peers[call.peer] = call;
 
+            //Removing the video on closure of call
             call.on("close", () => {
                 video.remove();
             });
@@ -88,6 +93,7 @@ navigator.mediaDevices
         });
 
         // Connecting a new user
+        //Set timeout function used to avoid any possible race condition
         socket.on("user-connected", (userId) => {
             setTimeout(() => {
                 connectToNewUser(userId, stream);
@@ -98,6 +104,8 @@ navigator.mediaDevices
         //Disconnect a user
         socket.on("user-disconnected", (userId) => {
             if (peers[userId]) peers[userId].close();
+            
+            //Increasing the size of remaining videos after disconnecting a user
             let totalUsers = document.getElementsByTagName("video").length;
             if (totalUsers > 0) {
                 for (let index = 0; index < totalUsers; index++) {
@@ -122,6 +130,7 @@ socket.on("disconnect", function () {
 const connectToNewUser = (userId, streams) => {
     var call = peer.call(userId, streams);
     console.log(call);
+    //creating a new video element for new user
     var video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
         console.log(userVideoStream);
@@ -129,6 +138,7 @@ const connectToNewUser = (userId, streams) => {
     });
     call.on("close", () => {
         video.remove();
+        //Resizing the remaining videos to fill the major part of screen
         let totalUsers = document.getElementsByTagName("video").length;
         if (totalUsers > 0) {
             for (let index = 0; index < totalUsers; index++) {
@@ -144,10 +154,13 @@ const connectToNewUser = (userId, streams) => {
 //Pause-Resume the user video
 const playStop = () => {
     let enabled = myVideoStream.getVideoTracks()[0].enabled;
+    //Pause the video
     if (enabled) {
         myVideoStream.getVideoTracks()[0].enabled = false;
         setPlayVideo();
-    } else {
+    }
+    //Resume the video streaming 
+    else {
         setStopVideo();
         myVideoStream.getVideoTracks()[0].enabled = true;
     }
@@ -160,8 +173,11 @@ const addVideoStream = (videoEl, stream, uId = "") => {
     videoEl.addEventListener("loadedmetadata", () => {
         videoEl.play();
     });
-
+    
+    //Adding this video to the screen video grid
     videoGrid.append(videoEl);
+
+    //Shrinking the size of videos to accomodate this new video element
     let totalUsers = document.getElementsByTagName("video").length;
     if (totalUsers > 1) {
         for (let index = 0; index < totalUsers; index++) {
@@ -171,6 +187,7 @@ const addVideoStream = (videoEl, stream, uId = "") => {
     }
 };
 
+//Mute/Unmute the user audio 
 const muteUnmute = () => {
     const enabled = myVideoStream.getAudioTracks()[0].enabled;
     if (enabled) {
@@ -182,24 +199,28 @@ const muteUnmute = () => {
     }
 };
 
+//Setting the video icon to paused video
 const setPlayVideo = () => {
     const html = `<i class="unmute fa fa-pause-circle"></i>
   <span class="unmute">Resume Video</span>`;
     document.getElementById("playPauseVideo").innerHTML = html;
 };
 
+//Setting the video icon to play mode
 const setStopVideo = () => {
     const html = `<i class=" fa fa-video-camera"></i>
   <span class="">Pause Video</span>`;
     document.getElementById("playPauseVideo").innerHTML = html;
 };
 
+//Setting the mic icon to slashed icon 
 const setUnmuteButton = () => {
     const html = `<i class="unmute fa fa-microphone-slash"></i>
   <span class="unmute">Unmute</span>`;
     document.getElementById("muteButton").innerHTML = html;
 };
 
+//Setting the mic icon to normal again
 const setMuteButton = () => {
     const html = `<i class="fa fa-microphone"></i>
   <span>Mute</span>`;
@@ -226,14 +247,17 @@ document.getElementById("sendMsg").addEventListener("click", (e) => {
 socket.on("createMessage", (message, name) => {
     console.log(message);
     let li = document.createElement("li");
+    //Raise hand feature
     if (`${message}` == "&#9995;") {
         li.innerHTML = `<div class="hand"><b>${name}&ensp;</b><span id="symbolhand">${message}</span></div>`;
     }
     else {
+        //Rendering other users messages
         if (name != YourName) {
             li.classList.add("otherUser");
             li.innerHTML = `<div class="singlemessage"><b><small>${name}:</small></b> <br>${message}<br></div>`;
         }
+        //Rendering your messages
         else {
             li.innerHTML = `<div class="mymessage"><b><small>Me:</small></b> <br>${message}<br></div>`;
         }
@@ -242,17 +266,18 @@ socket.on("createMessage", (message, name) => {
     main_chat_window.scrollTop = main_chat_window.scrollHeight;
 });
 
-
+//Showing the invite popup
 const showInvitePopup = () => {
     document.getElementById("invitePop").style.display = "block";
     document.getElementById("roomLink").value = window.location.href;
 };
 
-
+//Hiding the invite popup after showing it
 const hideInvitePopup = () => {
     document.getElementById("invitePop").style.display = "none";
 };
 
+//Function to copy the invite link
 const copyToClipboard = () => {
     var copyText = document.getElementById("roomLink");
     copyText.select();
@@ -262,6 +287,7 @@ const copyToClipboard = () => {
     hideInvitePopup();
 };
 
+//Function to allow ScreenSharing to host
 const screenShare = () => {
     navigator.mediaDevices.getDisplayMedia({
         video: {
@@ -277,6 +303,7 @@ const screenShare = () => {
         videoTrack.onended = function () {
             stopScreenShare();
         }
+        //streaming the host's shared screen to all others
         for (let x = 0; x < currentPeer.length; x++) {
 
             let sender = currentPeer[x].getSenders().find(function (s) {
@@ -289,6 +316,7 @@ const screenShare = () => {
     })
 }
 
+//Restoring the video track after screen sharing is stopped
 function stopScreenShare() {
     let videoTrack = myVideoStream.getVideoTracks()[0];
     for (let x = 0; x < currentPeer.length; x++) {
@@ -299,12 +327,14 @@ function stopScreenShare() {
     }
 }
 
+//Raise hand function
 const raisedHand = () => {
     const sym = "&#9995;";
     socket.emit('message', sym, YourName);
     unChangeHandLogo();
 }
 
+//Modifying the logo after the user raises hand
 const unChangeHandLogo = () => {
     const html = `<i class="fa fa-hand-paper-o" aria-hidden="true" style="color:red;"></i>
                 <span>Raised</span>`;
@@ -312,6 +342,7 @@ const unChangeHandLogo = () => {
     changeHandLogo();
 }
 
+//Restoring the logo after a few seconds of raise hand
 const changeHandLogo = () => {
     setInterval(function () {
         const html = `<i class="fa fa-hand-paper-o" aria-hidden="true" style="color:white;"></i>
@@ -320,6 +351,7 @@ const changeHandLogo = () => {
     }, 3000);
 }
 
+//Redirecting the user to home page on disconnect
 const disconnectNow = () => {
     window.location = "/";
 }
@@ -329,19 +361,24 @@ socket.on('remove-User', (userId) => {
         disconnectNow();
     }
 });
- 
+
+//Generating a whiteboard link for the whole team
+//The id of whiteboard is same as the room id
 const whiteboard = () => {
     var urlParser = document.createElement('a');
     urlParser.href = window.location.href;
     var pathname = urlParser.pathname;
+    //External site providing whiteboard
     var text = "https://www.witeboard.com" + pathname;
     var share = document.createElement('input');
     document.body.appendChild(share);
     share.value = text;
     share.select();
+    //Copying the link
     document.execCommand('copy');
     document.body.removeChild(share);
     alert('Copied: ' + `${text}`);
+    //Putting the link in chat box as announcement
     var msg = "This is the link for your team whiteboard: " + `${text}`;
     socket.emit('message', msg, YourName);
 
