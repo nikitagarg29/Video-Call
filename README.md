@@ -1,4 +1,29 @@
 # Video-Call
+
+This app is build using the Agile Methodology.   
+### Design phase:
+- Decided the tech stack
+- Worked on the requirements
+- Build a plan of what is to be made  
+- Explored various APIs/ SDKs that can be used.
+
+### Iteration 1
+* Mandatory functionality: A peer to peer connection established between 2 people.
+* Ability to mute/ unmute.
+* Ability to play/ pause your video.   
+
+### Iteration 2
+- Made changes as per feedback of Iteration 1.
+- Multiple users can connect. (Tested for 5 users)
+- Ability to play any user's video on full screen mode.
+- Host (the first user) can share his/her full screen, a tab or a window to all others.  
+- Worked on UI.   
+
+### Iteration 3
+* Made changes as per feedback of Iteration 2.
+* Implemented a chat box to be used during the meeting.
+* Raise hand feature
+* Whiteboard (under development), currently it leads to an external website.  
 ## Node js
 #### Node js is a JavaScript runtime based on Chrome V8 JavaScript engine.
 #### API reference: https://nodejs.org/
