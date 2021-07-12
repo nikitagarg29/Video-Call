@@ -104,7 +104,7 @@ navigator.mediaDevices
         //Disconnect a user
         socket.on("user-disconnected", (userId) => {
             if (peers[userId]) peers[userId].close();
-            
+
             //Increasing the size of remaining videos after disconnecting a user
             let totalUsers = document.getElementsByTagName("video").length;
             if (totalUsers > 0) {
@@ -173,7 +173,7 @@ const addVideoStream = (videoEl, stream, uId = "") => {
     videoEl.addEventListener("loadedmetadata", () => {
         videoEl.play();
     });
-    
+
     //Adding this video to the screen video grid
     videoGrid.append(videoEl);
 
@@ -382,5 +382,63 @@ const whiteboard = () => {
     var msg = "This is the link for your team whiteboard: " + `${text}`;
     socket.emit('message', msg, YourName);
 
+}
+
+//Implementing meeting recording feature
+let meetrecorder;
+let fragments = [];
+var options = {
+    mimeType: "video/webm; codecs=vp9",
+};
+
+const startRecord = () => {
+
+    //Since, taking the stream from getDisplayMedia the chrome will open a default popup
+    //seeking permission for screen share, but that stream will be used for recording only.
+    navigator.mediaDevices
+        .getDisplayMedia({
+            video: "screen",
+            audio: true,
+        })
+        .then((recordedStream) => {
+            meetrecorder = new MediaRecorder(recordedStream, options);
+            setRecordButton();
+            meetrecorder.start();
+            meetrecorder.ondataavailable = (e) => fragments.push(e.data);
+
+            //Storing the file, downloading it
+            recordedStream.getTracks()[0].onended = () => {
+                meetrecorder.stop();
+                unsetRecordButton();
+                const completeBlob = new Blob(fragments, { type: "video/webm" });
+                console.log(URL.createObjectURL(completeBlob));
+                
+                //Download in the form of .mp4 file
+                const a = document.createElement("a");
+                a.style.display = "none";
+                a.href = URL.createObjectURL(completeBlob);
+                a.download = "recordedvideo.mp4";
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                }, 1000);
+                fragments = [];
+            };
+        });
+};
+
+//Turn the button red when recording is on
+const setRecordButton = () => {
+    const html = `<i class="fa fa-dot-circle-o" aria-hidden="true" style="color: red;"></i>
+    <span>Stop Recording</span>`;
+    document.getElementById("recording").innerHTML = html;
+}
+
+//Resume the button back to white color when not recording
+const unsetRecordButton = () => {
+    const html = `<i class="fa fa-dot-circle-o" aria-hidden="true" style="color: white;"></i>
+    <span>Record</span>`;
+    document.getElementById("recording").innerHTML = html;
 }
 

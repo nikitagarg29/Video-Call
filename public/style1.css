@@ -15,10 +15,11 @@ video {
     display: block;
     flex: 1;
     object-fit: cover;
-    border: 5px solid black;
+    border: 1px solid white;
     background-color: #D2D2D2;
     max-width: 600px;
     max-height: 400px;
+    margin: 0.5%;
 }
 
 .main_left {
