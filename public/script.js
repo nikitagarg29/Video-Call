@@ -385,60 +385,82 @@ const whiteboard = () => {
 }
 
 //Implementing meeting recording feature
-let meetrecorder;
-let fragments = [];
-var options = {
-    mimeType: "video/webm; codecs=vp9",
-};
 
-const startRecord = () => {
+const button = document.getElementById('recording_button');
+const recordButton = document.querySelector('#record');
 
-    //Since, taking the stream from getDisplayMedia the chrome will open a default popup
-    //seeking permission for screen share, but that stream will be used for recording only.
-    navigator.mediaDevices
-        .getDisplayMedia({
-            video: "screen",
-            audio: true,
-        })
-        .then((recordedStream) => {
-            meetrecorder = new MediaRecorder(recordedStream, options);
-            setRecordButton();
-            meetrecorder.start();
-            meetrecorder.ondataavailable = (e) => fragments.push(e.data);
+//Controlling the recording using button
+button.addEventListener('click', () => {
+    console.log("record start");
+    recordButton.disabled = false;
+    window.stream = myVideoStream;
 
-            //Storing the file, downloading it
-            recordedStream.getTracks()[0].onended = () => {
-                meetrecorder.stop();
-                unsetRecordButton();
-                const completeBlob = new Blob(fragments, { type: "video/webm" });
-                console.log(URL.createObjectURL(completeBlob));
-                
-                //Download in the form of .mp4 file
-                const a = document.createElement("a");
-                a.style.display = "none";
-                a.href = URL.createObjectURL(completeBlob);
-                a.download = "recordedvideo.mp4";
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                }, 1000);
-                fragments = [];
-            };
-        });
-};
+    //If button clicked, start the recording and make icon red
+    if (recordButton.textContent === 'Start Recording') {
+        startRecording();
+        document.getElementById("icon_for_record").style.color = "red";
+    }
+    //Again clicked, stop the recording and restore icon to white
+    else {
+        stopRecording();
+        recordButton.textContent = 'Start Recording';
+        document.getElementById("icon_for_record").style.color = "white";
+    }
 
-//Turn the button red when recording is on
-const setRecordButton = () => {
-    const html = `<i class="fa fa-dot-circle-o" aria-hidden="true" style="color: red;"></i>
-    <span>Stop Recording</span>`;
-    document.getElementById("recording").innerHTML = html;
+});
+
+function startRecording() {
+    //All the data fetched from stream would be stored in recordedBlobs
+    recordedBlobs = [];
+    const mimeType = 'video/webm;codecs=vp9,opus';
+    const options = { mimeType };
+
+    try {
+        //Using the MediaRecorder function
+        //https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
+        mediaRecorder = new MediaRecorder(window.stream, options);
+    }
+    catch (e) {
+        return;
+    };
+
+    recordButton.textContent = 'Stop Recording';
+    //Download the recording
+    mediaRecorder.onstop = (event) => {
+        download();
+    };
+
+    //Push the data to recorded blobs using handleDataAvailable event
+    mediaRecorder.ondataavailable = handleDataAvailable;
+    mediaRecorder.start();
 }
 
-//Resume the button back to white color when not recording
-const unsetRecordButton = () => {
-    const html = `<i class="fa fa-dot-circle-o" aria-hidden="true" style="color: white;"></i>
-    <span>Record</span>`;
-    document.getElementById("recording").innerHTML = html;
+function handleDataAvailable(event) {
+    if (event.data && event.data.size > 0) {
+        recordedBlobs.push(event.data);
+    }
+}
+
+//Function to download the recording
+function download() {
+    const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+    const url = window.URL.createObjectURL(blob);
+    //Creating a link for the video on the display page
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'test.mp4';
+    document.body.appendChild(a);
+    //Destroying the tag after the video has been downloaded
+    a.click();
+    setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 100);
+}
+
+//Stop the recording
+function stopRecording() {
+    mediaRecorder.stop();
 }
 
