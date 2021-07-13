@@ -59,7 +59,7 @@
 ###### Cons:
 * Since it establishes a connection peer to peer, it is comparatively slow.
 * The peerjs github repo is not very active, hence you need to figure out the bugs and solve them on your own.
-* Turn servers are paid, hence cross netwrok connections are difficult to establish.
+* Turn servers are paid, hence cross network connections are difficult to establish.
 
 ### Other SDKs/APIs that were explored and can be used:
 
